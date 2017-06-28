@@ -51,8 +51,8 @@ return [
     | to any of the locales which will be supported by the application.
     |
     */
-
-    'locale' => 'en',
+    //项目语言选项，设置为中文
+    'locale' => 'zh-CN',
 
     /*
     |--------------------------------------------------------------------------

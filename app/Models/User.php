@@ -36,4 +36,14 @@ class User extends Model implements AuthenticatableContract,
      * @var array
      */
     protected $hidden = ['password', 'remember_token'];
+
+    /**
+     * gravatar作用是使用gravatar来作为头像支持，获取到用户邮箱经过一系列处理MD5转码后当做参数放到网址后面，能够显示对应头像
+     * @param string $size  默认头像尺寸
+     * @return string 头像
+     */
+    public function gravatar($size = '100') {
+        $hash = md5(strtolower(trim($this -> attributes['email'])));
+        return "https://www.gravatar.com/avatar/$hash?s=$size";
+    }
 }
