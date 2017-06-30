@@ -8,6 +8,7 @@ use App\Models\User;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
+use Auth;
 
 class UsersController extends Controller
 {
@@ -45,7 +46,7 @@ class UsersController extends Controller
         //required验证不能为空，email验证邮箱格式，uniques验证是否唯一，confirmed验证是否匹配
         $this -> validate ($request, [
             'name' => 'required|min:3|max:50',
-            'email' => 'required|email|max:255',
+            'email' => 'required|email|unique:users|max:255',
             'password' => 'required|confirmed'
             ]);
 
@@ -55,8 +56,10 @@ class UsersController extends Controller
             'email' => $request->email,
             'password' => bcrypt($request->password),
         ]);
+        //认证通过并注册成功后让用户自动登录
+        Auth::login($user);
         //使用session()来定制提示消息，flash()的作用是将消息存入会话缓存，但只在下一次请求前有效
-        session() -> flash('success','注册成功！欢迎你在这里开启一段新的路程~');
+        session() -> flash('success','注册成功！欢迎你在这里开启一段新的旅程~');
         //通过路由将$user的数据绑定到视图文件上，以直接调用
         return redirect() -> route('users.show',[$user]);
     }

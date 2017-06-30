@@ -15,7 +15,8 @@
             </a>
         </small>
         <nav>
-            <ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="#">联系</a></li>
                 <li><a href="{{route('about')}}">关于</a></li>
             </ul>
         </nav>
