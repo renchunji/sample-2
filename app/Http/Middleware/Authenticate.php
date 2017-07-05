@@ -38,7 +38,8 @@ class Authenticate
             if ($request->ajax()) {
                 return response('Unauthorized.', 401);
             } else {
-                return redirect()->guest('auth/login');
+                //使用auth中间件来作用户登录过滤处理，如果是游客身份且不是ajax访问方式，就重定向到登录页面
+                return redirect()->guest('login');
             }
         }
 

@@ -35,7 +35,7 @@ class User extends Model implements AuthenticatableContract,
      *
      * @var array
      */
-    protected $hidden = ['password', 'remember_token'];
+    //protected $hidden = ['password', 'remember_token'];
 
     /**
      * gravatar作用是使用gravatar来作为头像支持，获取到用户邮箱经过一系列处理MD5转码后当做参数放到网址后面，能够显示对应头像

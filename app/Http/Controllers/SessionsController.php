@@ -10,6 +10,14 @@ use Auth;
 
 class SessionsController extends Controller
 {
+    //定义一个构造函数，设置访问权限策略
+    public function __construct() {
+        //只让未登录用户访问登录页面
+        $this->middleware('guest', [
+            'only' => ['create']
+        ]);
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -55,7 +63,8 @@ class SessionsController extends Controller
         if (Auth::attempt($credentails, $request->has('remeber'))) {
             session() -> flash('success','欢迎回来!');
             //登录成功重定向用户个人信息页面时，用Auth类调用user方法来获取用户所有数据并返回给视图
-            return redirect() -> route('users.show',[Auth::user()]);
+            //为了提高用户体验，添加redirect实例的intended方法来跳转到用户登录前请求跳转的页面（如果不写则默认跳转到个人信息页面）
+            return redirect() -> intended(route('users.show',[Auth::user()]));
         }else{
             session() -> flash('danger','你的邮箱和密码不正确');
             return redirect() -> back();

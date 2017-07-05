@@ -15,6 +15,8 @@ class DatabaseSeeder extends Seeder
         Model::unguard();
 
         // $this->call(UserTableSeeder::class);
+        //指定要运行的数据填充文件
+        $this->call('UsersTableSeeder');
 
         Model::reguard();
     }

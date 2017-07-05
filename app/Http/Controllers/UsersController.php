@@ -12,6 +12,17 @@ use Auth;
 
 class UsersController extends Controller
 {
+    //创建一个构造函数，调用来进行用户过滤。调用middleware方法（第一个参数：指定要用的中间件过滤方法；第二个参数：指定要进行过滤的动作）进行过滤处理
+    public function __construct() {
+      $this->middleware('auth', [
+          'only' => ['show','edit', 'update','destroy']
+      ]);
+
+      //只让未注册用户访问注册页面
+       $this -> middleware('guest', [
+           'only' => ['create']
+       ]);
+    }
 
     /**
      * Display a listing of the resource.
@@ -20,7 +31,9 @@ class UsersController extends Controller
      */
     public function index()
     {
-        //
+        //将数据库中所有数据调用，并绑定到返回的视图上
+        $users = User::Paginate(15);
+        return view('users.index', compact('users'));
     }
 
     /**
@@ -86,7 +99,11 @@ class UsersController extends Controller
      */
     public function edit($id)
     {
-        //
+        //根据传过来的id值到数据中查找，查找到返回给$user,并绑定到视图上
+        $user = User::findOrFail($id);
+        //为用户进行授权限制,如果数据库中查找出来的数据与当前登录数据不匹配则返回一个错误提示
+        $this -> authorize('update', $user);
+        return view('users.edit', compact('user'));
     }
 
     /**
@@ -98,7 +115,28 @@ class UsersController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        //调用validate方法来做数据验证
+        $this -> validate($request, [
+            'name' => 'required|max:50',
+            'password' => 'confirmed|min:6'
+        ]);
+
+        //从数据库调出用户对象数据，并使用update方法来做数据更新
+        $user = User::findOrFail($id);
+        //为用户进行授权限制,如果数据库中查找出来的数据与当前登录数据不匹配则返回一个错误提示
+        $this -> authorize('update', $user);
+        $date = [];
+        $date['name'] = $request->name;
+        //为了增加用户体验，这里判断如果密码栏为空即代表用户不想改密码，不作处理，填写密码才做修改
+        if ($request->password) {
+            $date['password'] = bcrypt($request->password);
+        }
+        $user->update($date);
+
+        //更新成功返回提示
+        session() -> flash('success','资料修改成功');
+        //修改完成后重定向到个人信息页面
+        return redirect() -> route('users.show', $id);
     }
 
     /**
@@ -109,7 +147,12 @@ class UsersController extends Controller
      */
     public function destroy($id)
     {
-        //
+        //删除用户动作
+        $user = User::findOrFail($id);
+        $this->authorize('destroy', $user);
+        $user->delete();
+        session()-> flash('success', '删除成功！');
+        return back();
     }
 
 }

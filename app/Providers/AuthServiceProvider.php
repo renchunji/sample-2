@@ -5,6 +5,9 @@ namespace App\Providers;
 use Illuminate\Contracts\Auth\Access\Gate as GateContract;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
+use App\Models\User;
+use App\Policies\Userpolicy;
+
 class AuthServiceProvider extends ServiceProvider
 {
     /**
@@ -14,6 +17,8 @@ class AuthServiceProvider extends ServiceProvider
      */
     protected $policies = [
         'App\Model' => 'App\Policies\ModelPolicy',
+        //为User指定授权策略(一定要记得引入类和策略文件)
+        User::class => UserPolicy::class
     ];
 
     /**
@@ -26,6 +31,5 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies($gate);
 
-        //
     }
 }
